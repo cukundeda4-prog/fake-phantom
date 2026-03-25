@@ -30,4 +30,7 @@ export interface StagedNotification {
 export interface AppState {
   wallets: Wallet[];
   activeWalletId: string;
+  userName: string;
+  hasCompletedWelcome: boolean;
+  themeColor: string;
 }

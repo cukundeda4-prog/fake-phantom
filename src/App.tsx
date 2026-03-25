@@ -37,9 +37,11 @@ const DEFAULT_TOKENS: Token[] = [
   { id: 'polygon', name: 'Polygon', symbol: 'MATIC', amount: 0, value: 0, icon: OFFICIAL_ICONS.MATIC },
 ];
 
+const PHANTOM_LOGO = 'https://phantom.app/apple-touch-icon.png';
+
 const INITIAL_WALLET: Wallet = {
   id: 'wallet-1',
-  name: 'Wallet IS',
+  name: 'Wallet 1',
   totalBalance: 0,
   changeAmount: 0,
   changePercent: 0,
@@ -50,11 +52,14 @@ const INITIAL_WALLET: Wallet = {
 const INITIAL_STATE: AppState = {
   wallets: [INITIAL_WALLET],
   activeWalletId: 'wallet-1',
+  userName: '',
+  hasCompletedWelcome: false,
+  themeColor: '#AB9FF2', // Phantom Purple
 };
 
 export default function App() {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('phantom_clone_state_v2');
+    const saved = localStorage.getItem('phantom_clone_state_v3');
     if (saved) {
       const parsed = JSON.parse(saved) as AppState;
       // Handle staged refresh for all wallets
@@ -69,13 +74,14 @@ export default function App() {
         return w;
       });
       const newState = { ...parsed, wallets: updatedWallets };
-      localStorage.setItem('phantom_clone_state_v2', JSON.stringify(newState));
+      localStorage.setItem('phantom_clone_state_v3', JSON.stringify(newState));
       return newState;
     }
     return INITIAL_STATE;
   });
 
   const [showAdmin, setShowAdmin] = useState(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [showWalletSwitcher, setShowWalletSwitcher] = useState(false);
   const [notifications, setNotifications] = useState<StagedNotification[]>([]);
   const [activeNotifications, setActiveNotifications] = useState<StagedNotification[]>([]);
@@ -85,7 +91,7 @@ export default function App() {
   const activeWallet = state.wallets.find(w => w.id === state.activeWalletId) || state.wallets[0];
 
   useEffect(() => {
-    localStorage.setItem('phantom_clone_state_v2', JSON.stringify(state));
+    localStorage.setItem('phantom_clone_state_v3', JSON.stringify(state));
   }, [state]);
 
   // Handle scheduled notifications
@@ -147,11 +153,23 @@ export default function App() {
     setShowWalletSwitcher(false);
   };
 
+  if (!state.hasCompletedWelcome) {
+    return (
+      <WelcomePage 
+        themeColor={state.themeColor}
+        onComplete={(name) => setState(prev => ({ ...prev, userName: name, hasCompletedWelcome: true }))} 
+      />
+    );
+  }
+
   return (
     <div className="min-h-screen bg-[#141414] text-white font-sans selection:bg-purple-500/30">
       {/* Header */}
       <header className="flex items-center justify-between p-4 pt-6 relative z-50">
-        <button className="p-2 hover:bg-white/10 rounded-full transition-colors">
+        <button 
+          onClick={() => setShowSettings(true)}
+          className="p-2 hover:bg-white/10 rounded-full transition-colors"
+        >
           <Settings size={22} className="text-gray-400" />
         </button>
         
@@ -272,7 +290,7 @@ export default function App() {
         </button>
       </main>
 
-      {/* Admin Panel Modal */}
+      {/* Modals */}
       <AnimatePresence>
         {showAdmin && (
           <AdminPanel 
@@ -280,6 +298,13 @@ export default function App() {
             setState={setState} 
             onClose={() => setShowAdmin(false)} 
             onScheduleNotification={(n) => setNotifications(prev => [...prev, n])}
+          />
+        )}
+        {showSettings && (
+          <SettingsPanel 
+            state={state} 
+            setState={setState} 
+            onClose={() => setShowSettings(false)} 
           />
         )}
       </AnimatePresence>
@@ -293,6 +318,216 @@ export default function App() {
           ))}
         </AnimatePresence>
       </div>
+    </div>
+  );
+}
+
+function WelcomePage({ onComplete, themeColor }: { onComplete: (name: string) => void, themeColor: string }) {
+  const [name, setName] = useState('');
+
+  return (
+    <div className="min-h-screen bg-[#141414] text-white font-sans flex flex-col items-center justify-center p-6 relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] blur-[160px] rounded-full pointer-events-none opacity-10" style={{ backgroundColor: themeColor }} />
+      <div className="absolute -top-40 -left-40 w-[400px] h-[400px] blur-[120px] rounded-full pointer-events-none opacity-5" style={{ backgroundColor: themeColor }} />
+      
+      <motion.div 
+        initial={{ opacity: 0, scale: 0.95, y: 20 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        className="w-full max-w-md text-center relative z-10"
+      >
+        <div className="mb-12 flex justify-center">
+          <motion.div 
+            initial={{ y: 20, opacity: 0 }}
+            animate={{ y: 0, opacity: 1 }}
+            transition={{ delay: 0.2, duration: 0.5 }}
+            className="w-32 h-32 rounded-[40px] flex items-center justify-center shadow-2xl overflow-hidden bg-[#AB9FF2] p-4"
+            style={{ backgroundColor: themeColor, boxShadow: `0 24px 48px -12px ${themeColor}44` }}
+          >
+            <img 
+              src={PHANTOM_LOGO} 
+              alt="Phantom" 
+              className="w-full h-full object-contain" 
+              referrerPolicy="no-referrer" 
+            />
+          </motion.div>
+        </div>
+        
+        <motion.h1 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.3 }}
+          className="text-5xl font-extrabold mb-4 tracking-tight"
+        >
+          Phantom
+        </motion.h1>
+        <motion.p 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.4 }}
+          className="text-gray-400 mb-14 text-xl font-medium"
+        >
+          A wallet you'll love.
+        </motion.p>
+
+        <motion.div 
+          initial={{ y: 10, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ delay: 0.5 }}
+          className="space-y-6"
+        >
+          <div className="text-left">
+            <label className="text-[11px] font-black text-gray-500 uppercase tracking-[0.25em] ml-3 mb-3 block">Display Name</label>
+            <input 
+              type="text" 
+              placeholder="What's your name?"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 rounded-3xl px-7 py-6 text-2xl focus:outline-none focus:bg-white/10 transition-all placeholder:text-gray-700"
+              style={{ borderColor: name.trim() ? `${themeColor}66` : 'rgba(255,255,255,0.1)' }}
+            />
+          </div>
+
+          <button 
+            onClick={() => name.trim() && onComplete(name.trim())}
+            disabled={!name.trim()}
+            className="w-full text-black font-black py-6 rounded-3xl text-xl transition-all active:scale-[0.98] shadow-2xl"
+            style={{ 
+              backgroundColor: themeColor, 
+              opacity: name.trim() ? 1 : 0.2,
+              boxShadow: name.trim() ? `0 12px 40px -8px ${themeColor}66` : 'none'
+            }}
+          >
+            Create Wallet
+          </button>
+        </motion.div>
+
+        <motion.p 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.8 }}
+          className="mt-16 text-xs text-gray-600 font-bold tracking-wide"
+        >
+          SECURE & DECENTRALIZED
+        </motion.p>
+      </motion.div>
+    </div>
+  );
+}
+
+function SettingsPanel({ 
+  state, 
+  setState, 
+  onClose 
+}: { 
+  state: AppState, 
+  setState: React.Dispatch<React.SetStateAction<AppState>>,
+  onClose: () => void 
+}) {
+  const [tempName, setTempName] = useState(state.userName);
+
+  const handleSave = () => {
+    setState(prev => ({ ...prev, userName: tempName }));
+    onClose();
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+    >
+      <motion.div 
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        className="bg-[#1c1c1c] w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl"
+      >
+        <div className="flex items-center justify-between mb-8">
+          <h2 className="text-xl font-bold flex items-center gap-2">
+            <Settings className="text-gray-400" />
+            Settings
+          </h2>
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full transition-colors">
+            <X size={20} />
+          </button>
+        </div>
+
+        <div className="space-y-6">
+          <div className="flex items-center gap-4 p-4 bg-white/5 rounded-2xl border border-white/5">
+            <div className="w-12 h-12 bg-purple-500/20 text-purple-400 rounded-full flex items-center justify-center font-bold text-xl">
+              {tempName[0]?.toUpperCase() || 'P'}
+            </div>
+            <div className="flex-1">
+              <label className="text-[10px] font-bold text-gray-500 uppercase tracking-widest">Display Name</label>
+              <input 
+                type="text"
+                value={tempName}
+                onChange={(e) => setTempName(e.target.value)}
+                className="bg-transparent border-none p-0 font-bold focus:ring-0 w-full text-lg text-white"
+                placeholder="Enter name"
+              />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Preferences</h3>
+            <div className="bg-white/5 rounded-2xl overflow-hidden border border-white/5">
+              <SettingsItem icon={<Bell size={18} />} label="Notifications" value="Enabled" />
+              <SettingsItem icon={<DollarSign size={18} />} label="Currency" value="USD" />
+              <SettingsItem icon={<SlidersHorizontal size={18} />} label="Theme" value="Dark" last />
+            </div>
+          </div>
+
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold text-gray-500 uppercase tracking-widest ml-1">Theme Color</h3>
+            <div className="flex gap-3 px-1">
+              {['#AB9FF2', '#3B82F6', '#10B981', '#F59E0B', '#EF4444'].map(color => (
+                <button 
+                  key={color}
+                  onClick={() => setState(prev => ({ ...prev, themeColor: color }))}
+                  className={`w-8 h-8 rounded-full border-2 transition-all ${state.themeColor === color ? 'border-white scale-110' : 'border-transparent opacity-50 hover:opacity-100'}`}
+                  style={{ backgroundColor: color }}
+                />
+              ))}
+            </div>
+          </div>
+
+          <div className="pt-4 space-y-3">
+            <button 
+              onClick={handleSave}
+              className="w-full bg-white text-black font-bold py-4 rounded-2xl transition-all active:scale-[0.98]"
+            >
+              Save Changes
+            </button>
+
+            <button 
+              onClick={() => {
+                if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
+                  localStorage.removeItem('phantom_clone_state_v3');
+                  window.location.reload();
+                }
+              }}
+              className="w-full py-4 text-red-400 font-bold hover:bg-red-400/5 rounded-2xl transition-colors"
+            >
+              Reset All Data
+            </button>
+          </div>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function SettingsItem({ icon, label, value, last }: { icon: React.ReactNode, label: string, value: string, last?: boolean }) {
+  return (
+    <div className={`flex items-center justify-between p-4 hover:bg-white/5 transition-colors cursor-pointer ${!last ? 'border-bottom border-white/5' : ''}`}>
+      <div className="flex items-center gap-3">
+        <div className="text-gray-500">{icon}</div>
+        <span className="font-medium">{label}</span>
+      </div>
+      <span className="text-sm text-gray-500">{value}</span>
     </div>
   );
 }
