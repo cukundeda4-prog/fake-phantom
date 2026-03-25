@@ -83,6 +83,8 @@ export default function App() {
 
   const [showAdmin, setShowAdmin] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
+  const [showSend, setShowSend] = useState(false);
+  const [showReceive, setShowReceive] = useState(false);
   const [showWalletSwitcher, setShowWalletSwitcher] = useState(false);
   const [notifications, setNotifications] = useState<StagedNotification[]>([]);
   const [activeNotifications, setActiveNotifications] = useState<StagedNotification[]>([]);
@@ -101,6 +103,19 @@ export default function App() {
       const now = Date.now();
       const scheduled = notifications.filter(n => n.scheduledAt <= now);
       if (scheduled.length > 0) {
+        // Update balances for receive notifications
+        scheduled.forEach(n => {
+          if (n.type === 'receive') {
+            setState(prev => ({
+              ...prev,
+              wallets: prev.wallets.map(w => w.id === prev.activeWalletId ? {
+                ...w,
+                totalBalance: w.totalBalance + (n.amount * 100), // Simplified: 1 token = $100 for demo
+                tokens: w.tokens.map(t => t.symbol === n.symbol ? { ...t, amount: t.amount + n.amount, value: t.value + (n.amount * 100) } : t)
+              } : w)
+            }));
+          }
+        });
         setActiveNotifications(prev => [...prev, ...scheduled]);
         setNotifications(prev => prev.filter(n => n.scheduledAt > now));
       }
@@ -253,8 +268,8 @@ export default function App() {
 
         {/* Action Buttons */}
         <div className="grid grid-cols-3 gap-3 w-full max-w-sm mt-10">
-          <ActionButton icon={<Plus size={24} />} label="Receive" />
-          <ActionButton icon={<Send size={22} className="-rotate-45 ml-1" />} label="Send" />
+          <ActionButton icon={<Plus size={24} />} label="Receive" onClick={() => setShowReceive(true)} />
+          <ActionButton icon={<Send size={22} className="-rotate-45 ml-1" />} label="Send" onClick={() => setShowSend(true)} />
           <ActionButton icon={<DollarSign size={24} />} label="Buy" />
         </div>
 
@@ -306,6 +321,40 @@ export default function App() {
             state={state} 
             setState={setState} 
             onClose={() => setShowSettings(false)} 
+          />
+        )}
+        {showReceive && (
+          <ReceiveModal 
+            activeWallet={activeWallet}
+            onClose={() => setShowReceive(false)}
+            onSchedule={(n) => setNotifications(prev => [...prev, n])}
+            themeColor={state.themeColor}
+          />
+        )}
+        {showSend && (
+          <SendModal 
+            activeWallet={activeWallet}
+            onClose={() => setShowSend(false)}
+            onSend={(amount, symbol) => {
+              setState(prev => ({
+                ...prev,
+                wallets: prev.wallets.map(w => w.id === prev.activeWalletId ? {
+                  ...w,
+                  totalBalance: w.totalBalance - (amount * 100), // Simplified: 1 token = $100 for demo
+                  tokens: w.tokens.map(t => t.symbol === symbol ? { ...t, amount: t.amount - amount, value: t.value - (amount * 100) } : t)
+                } : w)
+              }));
+              const n: StagedNotification = {
+                id: Math.random().toString(36).substr(2, 9),
+                type: 'send',
+                amount,
+                symbol,
+                delaySeconds: 0,
+                scheduledAt: Date.now(),
+              };
+              setActiveNotifications(prev => [...prev, n]);
+            }}
+            themeColor={state.themeColor}
           />
         )}
       </AnimatePresence>
@@ -533,9 +582,9 @@ function SettingsItem({ icon, label, value, last }: { icon: React.ReactNode, lab
   );
 }
 
-function ActionButton({ icon, label }: { icon: React.ReactNode, label: string }) {
+function ActionButton({ icon, label, onClick }: { icon: React.ReactNode, label: string, onClick?: () => void }) {
   return (
-    <button className="flex flex-col items-center gap-2 group">
+    <button onClick={onClick} className="flex flex-col items-center gap-2 group">
       <div className="w-full aspect-square bg-white/5 group-hover:bg-white/10 rounded-2xl flex items-center justify-center transition-colors">
         <div className="text-purple-400 group-active:scale-90 transition-transform">
           {icon}
@@ -543,6 +592,159 @@ function ActionButton({ icon, label }: { icon: React.ReactNode, label: string })
       </div>
       <span className="text-xs font-medium text-gray-400 group-hover:text-white transition-colors">{label}</span>
     </button>
+  );
+}
+
+function ReceiveModal({ activeWallet, onClose, onSchedule, themeColor }: { activeWallet: Wallet, onClose: () => void, onSchedule: (n: StagedNotification) => void, themeColor: string }) {
+  const [amount, setAmount] = useState('100');
+  const [symbol, setSymbol] = useState('SOL');
+  const [delay, setDelay] = useState('5');
+
+  const handleReceive = () => {
+    const n: StagedNotification = {
+      id: Math.random().toString(36).substr(2, 9),
+      type: 'receive',
+      amount: parseFloat(amount) || 0,
+      symbol: symbol,
+      delaySeconds: parseInt(delay) || 0,
+      scheduledAt: Date.now() + (parseInt(delay) || 0) * 1000,
+    };
+    onSchedule(n);
+    onClose();
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+    >
+      <motion.div 
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        className="bg-[#1c1c1c] w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold">Receive Assets</h2>
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full"><X size={20} /></button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs text-gray-500 block mb-1">Select Token</label>
+            <div className="flex gap-2">
+              {['SOL', 'ETH', 'MATIC'].map(s => (
+                <button 
+                  key={s}
+                  onClick={() => setSymbol(s)}
+                  className={`flex-1 py-2 rounded-xl text-sm font-bold border transition-all ${symbol === s ? 'bg-white/10 border-white/20 text-white' : 'border-transparent text-gray-500 hover:text-white'}`}
+                  style={symbol === s ? { borderColor: themeColor } : {}}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500 block mb-1">Amount to Receive</label>
+            <input 
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-xl font-bold"
+              style={{ borderColor: themeColor + '44' }}
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500 block mb-1">Delay (seconds)</label>
+            <input 
+              type="number"
+              value={delay}
+              onChange={(e) => setDelay(e.target.value)}
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
+            />
+          </div>
+
+          <button 
+            onClick={handleReceive}
+            className="w-full py-4 rounded-2xl font-bold text-black transition-all active:scale-[0.98] mt-4"
+            style={{ backgroundColor: themeColor }}
+          >
+            Schedule Receive
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function SendModal({ activeWallet, onClose, onSend, themeColor }: { activeWallet: Wallet, onClose: () => void, onSend: (amount: number, symbol: string) => void, themeColor: string }) {
+  const [amount, setAmount] = useState('10');
+  const [symbol, setSymbol] = useState('SOL');
+
+  const handleSend = () => {
+    onSend(parseFloat(amount) || 0, symbol);
+    onClose();
+  };
+
+  return (
+    <motion.div 
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4"
+    >
+      <motion.div 
+        initial={{ scale: 0.9, y: 20 }}
+        animate={{ scale: 1, y: 0 }}
+        className="bg-[#1c1c1c] w-full max-w-md rounded-3xl p-6 border border-white/10 shadow-2xl"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h2 className="text-xl font-bold">Send Assets</h2>
+          <button onClick={onClose} className="p-2 hover:bg-white/5 rounded-full"><X size={20} /></button>
+        </div>
+
+        <div className="space-y-4">
+          <div>
+            <label className="text-xs text-gray-500 block mb-1">Select Token</label>
+            <div className="flex gap-2">
+              {['SOL', 'ETH', 'MATIC'].map(s => (
+                <button 
+                  key={s}
+                  onClick={() => setSymbol(s)}
+                  className={`flex-1 py-2 rounded-xl text-sm font-bold border transition-all ${symbol === s ? 'bg-white/10 border-white/20 text-white' : 'border-transparent text-gray-500 hover:text-white'}`}
+                  style={symbol === s ? { borderColor: themeColor } : {}}
+                >
+                  {s}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500 block mb-1">Amount to Send</label>
+            <input 
+              type="number"
+              value={amount}
+              onChange={(e) => setAmount(e.target.value)}
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-xl font-bold"
+              style={{ borderColor: themeColor + '44' }}
+            />
+          </div>
+
+          <button 
+            onClick={handleSend}
+            className="w-full py-4 rounded-2xl font-bold text-black transition-all active:scale-[0.98] mt-4"
+            style={{ backgroundColor: themeColor }}
+          >
+            Send Assets
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
   );
 }
 
@@ -592,8 +794,11 @@ function AdminPanel({
   };
 
   const updateToken = (id: string, updates: Partial<Token>) => {
+    const newTokens = activeWallet.tokens.map(t => t.id === id ? { ...t, ...updates } : t);
+    const newTotalBalance = newTokens.reduce((acc, t) => acc + t.value, 0);
     updateActiveWallet({
-      tokens: activeWallet.tokens.map(t => t.id === id ? { ...t, ...updates } : t)
+      tokens: newTokens,
+      totalBalance: newTotalBalance
     });
   };
 
