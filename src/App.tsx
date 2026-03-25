@@ -20,7 +20,8 @@ import {
   Wallet as WalletIcon,
   Trash2,
   Edit2,
-  PlusCircle
+  PlusCircle,
+  Ghost
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Token, StagedNotification, AppState, Wallet } from './types';
@@ -37,7 +38,7 @@ const DEFAULT_TOKENS: Token[] = [
   { id: 'polygon', name: 'Polygon', symbol: 'MATIC', amount: 0, value: 0, icon: OFFICIAL_ICONS.MATIC },
 ];
 
-const PHANTOM_LOGO = 'https://phantom.app/apple-touch-icon.png';
+const PHANTOM_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAYFBMVEWYhuX//fj///mUgeSWhOWSf+SRfeT8+/ju6/Wwoun5+Pjz8Paml+eNeeO2qeqfjuaklOfWz/D29Pfc1vHg2vLKwe6qm+iaieXn4/S/tOyKdePQyO+8sOvDuOzr5/XFvO2COE5gAAAFGUlEQVR4nO2b65ayOgyGJWkLBTkjeJ77v8tdGVFBBptC8Vtr9/03jMhjmubQls3GycnJycnJycnJycnJycnJuthD3yZpxVCITbqtZaIk66wRAr8MxDE75PsgKkIfADw/jIJ9nmw4fsliKNLktIdO3k3dH8GuxvXthYhJFXkdzFAA4T7hq2Ix0STln0AdFgQJX20QEdNd5E8S3bm8qlnHWChk7mkQ/WKFiVgBCeVex0jPQbzYthWLZTXtSSNUJ7u24lnpk4h+qXbcHhJudpSBe1J5B1u2YpgUJkitrbZ2/IqnpSHSjeraWEBi7EB3plcqC87Om8rcTC0UNEuHdn4OZyHdqPJlvYqJ0zwztVDhdklTYXadjdSaakGvErJYgskDfzko/Jk/dHeq80JexeJ8KSYPymWgMN0vhaSgonQRJox0q6b3z71fArnA/ONSMzoB+GEfQlU34Vvuhp/5xQLf6jIVl3orX2MZQC7r+jCwM+zj2UxnzWQHJeeqLRbZgwGKTKgrPC573wDhcS6T1GUK7n06bu83gJf8jhNjg3kyc/qJRLcogLp7lAofv1fyzndQ9j86L9Ogro8rQz1uYncEkA+LiJ5bQTLHVNpj18/+aXC7C/znF4m8B3WYAYWZfrqD3cuD2swNxTPJ8Z8e1IyYQGHqQ7V+DdFz5vNLD+pkDMWagJBb4PRuqeej+a4PZVwoDOfxB6iXNJu2bg3e5jHJRLkMVP97PkNFjz4Fk3tIeNYoolhk+PoG16FKuicdqztU1UHxcz+k78wsxRNq/QTFfbGHy0eaOf8+HNO+dxrOPszobQtcU4EM4+RxK/hJjCobNgPvNK09TXoECE9JfVvXe16B6izlafgDzSJ6nBswdWuvny4Z5j68GDHpwxsYiqWzlgs+M/kG9RQtahpAXemVZz952oCi98iqcLQNRY8IaHnw1IQkt1hITS90qIDajLKN3Zl3g6qohuKVbSZ6OmbSt8300vboGkp30WAGEzV0DuoeO1AlMXQ29g2lSgSan5OrTRMm6uoU91aAymlVp/Wk10JJ2twj9XmmTAXNzfGwhqGIPUO8iqEymqHkGoYiujnSOmIzJuIeFqMssRhD5f+em0NY06J5vMgW1QcoYnHOGtuVucGuqO3+s4WirmvgChVnQN1pT60XLUCuOJn9yElvQe0XCLAnr7TEBJf69MnR/wNk5Lb4SOj2pr0P/LH/g2ewTobaSBBNL6hBPlZs9Jb+NcVq7S0Yv560FFxxZPyMFs67lW8NqF06fVBR4giT0VES7XgO1XEyeMCF49A9TY+9Cc3eSvVHYqqauMWieLhjbLpnxU9aUMqhkE9AQSmGPxAgqA03YoQWFKjBmaq7YN9+2cv2AoB/Sk03HPUs1a7h/D1Ru62Y26bHXUWeme/2a/Xr7eAoQ/wVsvMuj2CT7KMwDMoknXPsGzVWW7oNPTaakcC7vLgOxkcujjNPyGu0V499srEfoNxZLn+udCTijdtJSQyXj2/ubOMc/HG6O1YO8/QOll5f63mFVNk5Ujrt6YMD0ng7fvpQWNbCzgF4NnXyB4pzP/4xrMso9P2wiMpzY+8NBvyzIAG4pm9OjIJtpaxTZvUdFMbGTaWG5zD+Vg5jaP11HRw71qJcJs8sniH/TKXcapjfwzJb7y2OcarsBD1Fu/rLSJv2HZjLPlBZS82qa3lJv/bCUl+Miyar63qbYvxNV3rTv/MSnJOTk5OTk5OTk5OTk5PT/1D/AWp6QhyNaDjCAAAAAElFTkSuQmCC";
 
 const INITIAL_WALLET: Wallet = {
   id: 'wallet-1',
@@ -59,7 +60,7 @@ const INITIAL_STATE: AppState = {
 
 export default function App() {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('phantom_clone_state_v3');
+    const saved = localStorage.getItem('phantom_clone_state_v7');
     if (saved) {
       const parsed = JSON.parse(saved) as AppState;
       // Handle staged refresh for all wallets
@@ -74,7 +75,7 @@ export default function App() {
         return w;
       });
       const newState = { ...parsed, wallets: updatedWallets };
-      localStorage.setItem('phantom_clone_state_v3', JSON.stringify(newState));
+      localStorage.setItem('phantom_clone_state_v7', JSON.stringify(newState));
       return newState;
     }
     return INITIAL_STATE;
@@ -91,7 +92,7 @@ export default function App() {
   const activeWallet = state.wallets.find(w => w.id === state.activeWalletId) || state.wallets[0];
 
   useEffect(() => {
-    localStorage.setItem('phantom_clone_state_v3', JSON.stringify(state));
+    localStorage.setItem('phantom_clone_state_v7', JSON.stringify(state));
   }, [state]);
 
   // Handle scheduled notifications
@@ -342,7 +343,7 @@ function WelcomePage({ onComplete, themeColor }: { onComplete: (name: string) =>
             initial={{ y: 20, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             transition={{ delay: 0.2, duration: 0.5 }}
-            className="w-32 h-32 rounded-[40px] flex items-center justify-center shadow-2xl overflow-hidden bg-[#AB9FF2] p-4"
+            className="w-32 h-32 rounded-[40px] flex items-center justify-center shadow-2xl overflow-hidden p-4"
             style={{ backgroundColor: themeColor, boxShadow: `0 24px 48px -12px ${themeColor}44` }}
           >
             <img 
@@ -505,7 +506,7 @@ function SettingsPanel({
             <button 
               onClick={() => {
                 if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-                  localStorage.removeItem('phantom_clone_state_v3');
+                  localStorage.removeItem('phantom_clone_state_v7');
                   window.location.reload();
                 }
               }}
