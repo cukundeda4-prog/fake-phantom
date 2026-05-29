@@ -698,7 +698,7 @@ function SendModal({ activeWallet, onClose, onSend, themeColor }: { activeWallet
 
   const handleSend = () => {
     if (address.trim().length > 0) {
-      setErrorMsg("crypto currency sending is currently not available in bosnia");
+      setErrorMsg("Cryptocurrency sending is currently not available in Bosnia.");
       return;
     }
     onSend(parseFloat(amount) || 0, symbol);
