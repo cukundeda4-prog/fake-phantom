@@ -30,12 +30,20 @@ const OFFICIAL_ICONS = {
   SOL: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
   ETH: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ethereum/info/logo.png',
   MATIC: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/polygon/info/logo.png',
+  BTC: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/bitcoin/info/logo.png',
+  LTC: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/litecoin/info/logo.png',
+  XRP: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/ripple/info/logo.png',
+  DOGE: 'https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/doge/info/logo.png',
 };
 
 const DEFAULT_TOKENS: Token[] = [
-  { id: 'solana', name: 'Solana', symbol: 'SOL', amount: 0, value: 0, icon: OFFICIAL_ICONS.SOL },
-  { id: 'ethereum', name: 'Ethereum', symbol: 'ETH', amount: 0, value: 0, icon: OFFICIAL_ICONS.ETH },
-  { id: 'polygon', name: 'Polygon', symbol: 'MATIC', amount: 0, value: 0, icon: OFFICIAL_ICONS.MATIC },
+  { id: 'solana', name: 'Solana', symbol: 'SOL', amount: 15, value: 2250, icon: OFFICIAL_ICONS.SOL },
+  { id: 'ethereum', name: 'Ethereum', symbol: 'ETH', amount: 1.5, value: 4500, icon: OFFICIAL_ICONS.ETH },
+  { id: 'polygon', name: 'Polygon', symbol: 'MATIC', amount: 500, value: 250, icon: OFFICIAL_ICONS.MATIC },
+  { id: 'bitcoin', name: 'Bitcoin', symbol: 'BTC', amount: 0.1, value: 6500, icon: OFFICIAL_ICONS.BTC },
+  { id: 'litecoin', name: 'Litecoin', symbol: 'LTC', amount: 12, value: 960, icon: OFFICIAL_ICONS.LTC },
+  { id: 'ripple', name: 'Ripple', symbol: 'XRP', amount: 800, value: 400, icon: OFFICIAL_ICONS.XRP },
+  { id: 'dogecoin', name: 'Dogecoin', symbol: 'DOGE', amount: 1500, value: 225, icon: OFFICIAL_ICONS.DOGE },
 ];
 
 const PHANTOM_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMAAABC4vDmAAAAYFBMVEWYhuX//fj///mUgeSWhOWSf+SRfeT8+/ju6/Wwoun5+Pjz8Paml+eNeeO2qeqfjuaklOfWz/D29Pfc1vHg2vLKwe6qm+iaieXn4/S/tOyKdePQyO+8sOvDuOzr5/XFvO2COE5gAAAFGUlEQVR4nO2b65ayOgyGJWkLBTkjeJ77v8tdGVFBBptC8Vtr9/03jMhjmubQls3GycnJycnJycnJycnJycnJuthD3yZpxVCITbqtZaIk66wRAr8MxDE75PsgKkIfADw/jIJ9nmw4fsliKNLktIdO3k3dH8GuxvXthYhJFXkdzFAA4T7hq2Ix0STln0AdFgQJX20QEdNd5E8S3bm8qlnHWChk7mkQ/WKFiVgBCeVex0jPQbzYthWLZTXtSSNUJ7u24lnpk4h+qXbcHhJudpSBe1J5B1u2YpgUJkitrbZ2/IqnpSHSjeraWEBi7EB3plcqC87Om8rcTC0UNEuHdn4OZyHdqPJlvYqJ0zwztVDhdklTYXadjdSaakGvErJYgskDfzko/Jk/dHeq80JexeJ8KSYPymWgMN0vhaSgonQRJox0q6b3z71fArnA/ONSMzoB+GEfQlU34Vvuhp/5xQLf6jIVl3orX2MZQC7r+jCwM+zj2UxnzWQHJeeqLRbZgwGKTKgrPC573wDhcS6T1GUK7n06bu83gJf8jhNjg3kyc/qJRLcogLp7lAofv1fyzndQ9j86L9Ogro8rQz1uYncEkA+LiJ5bQTLHVNpj18/+aXC7C/znF4m8B3WYAYWZfrqD3cuD2swNxTPJ8Z8e1IyYQGHqQ7V+DdFz5vNLD+pkDMWagJBb4PRuqeej+a4PZVwoDOfxB6iXNJu2bg3e5jHJRLkMVP97PkNFjz4Fk3tIeNYoolhk+PoG16FKuicdqztU1UHxcz+k78wsxRNq/QTFfbGHy0eaOf8+HNO+dxrOPszobQtcU4EM4+RxK/hJjCobNgPvNK09TXoECE9JfVvXe16B6izlafgDzSJ6nBswdWuvny4Z5j68GDHpwxsYiqWzlgs+M/kG9RQtahpAXemVZz952oCi98iqcLQNRY8IaHnw1IQkt1hITS90qIDajLKN3Zl3g6qohuKVbSZ6OmbSt8300vboGkp30WAGEzV0DuoeO1AlMXQ29g2lSgSan5OrTRMm6uoU91aAymlVp/Wk10JJ2twj9XmmTAXNzfGwhqGIPUO8iqEymqHkGoYiujnSOmIzJuIeFqMssRhD5f+em0NY06J5vMgW1QcoYnHOGtuVucGuqO3+s4WirmvgChVnQN1pT60XLUCuOJn9yElvQe0XCLAnr7TEBJf69MnR/wNk5Lb4SOj2pr0P/LH/g2ewTobaSBBNL6hBPlZs9Jb+NcVq7S0Yv560FFxxZPyMFs67lW8NqF06fVBR4giT0VES7XgO1XEyeMCF49A9TY+9Cc3eSvVHYqqauMWieLhjbLpnxU9aUMqhkE9AQSmGPxAgqA03YoQWFKjBmaq7YN9+2cv2AoB/Sk03HPUs1a7h/D1Ru62Y26bHXUWeme/2a/Xr7eAoQ/wVsvMuj2CT7KMwDMoknXPsGzVWW7oNPTaakcC7vLgOxkcujjNPyGu0V499srEfoNxZLn+udCTijdtJSQyXj2/ubOMc/HG6O1YO8/QOll5f63mFVNk5Ujrt6YMD0ng7fvpQWNbCzgF4NnXyB4pzP/4xrMso9P2wiMpzY+8NBvyzIAG4pm9OjIJtpaxTZvUdFMbGTaWG5zD+Vg5jaP11HRw71qJcJs8sniH/TKXcapjfwzJb7y2OcarsBD1Fu/rLSJv2HZjLPlBZS82qa3lJv/bCUl+Miyar63qbYvxNV3rTv/MSnJOTk5OTk5OTk5OTk5PT/1D/AWp6QhyNaDjCAAAAAElFTkSuQmCC";
@@ -43,9 +51,9 @@ const PHANTOM_LOGO = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAJQAAACUCAMA
 const INITIAL_WALLET: Wallet = {
   id: 'wallet-1',
   name: 'Wallet 1',
-  totalBalance: 0,
-  changeAmount: 0,
-  changePercent: 0,
+  totalBalance: 15085,
+  changeAmount: 342.50,
+  changePercent: 2.32,
   tokens: DEFAULT_TOKENS,
   stagedRefreshAmount: null,
 };
@@ -60,7 +68,7 @@ const INITIAL_STATE: AppState = {
 
 export default function App() {
   const [state, setState] = useState<AppState>(() => {
-    const saved = localStorage.getItem('phantom_clone_state_v7');
+    const saved = localStorage.getItem('phantom_clone_state_v8');
     if (saved) {
       const parsed = JSON.parse(saved) as AppState;
       // Handle staged refresh for all wallets
@@ -75,7 +83,7 @@ export default function App() {
         return w;
       });
       const newState = { ...parsed, wallets: updatedWallets };
-      localStorage.setItem('phantom_clone_state_v7', JSON.stringify(newState));
+      localStorage.setItem('phantom_clone_state_v8', JSON.stringify(newState));
       return newState;
     }
     return INITIAL_STATE;
@@ -94,7 +102,7 @@ export default function App() {
   const activeWallet = state.wallets.find(w => w.id === state.activeWalletId) || state.wallets[0];
 
   useEffect(() => {
-    localStorage.setItem('phantom_clone_state_v7', JSON.stringify(state));
+    localStorage.setItem('phantom_clone_state_v8', JSON.stringify(state));
   }, [state]);
 
   // Handle scheduled notifications
@@ -555,7 +563,7 @@ function SettingsPanel({
             <button 
               onClick={() => {
                 if (window.confirm('Are you sure you want to clear all data? This cannot be undone.')) {
-                  localStorage.removeItem('phantom_clone_state_v7');
+                  localStorage.removeItem('phantom_clone_state_v8');
                   window.location.reload();
                 }
               }}
@@ -632,16 +640,17 @@ function ReceiveModal({ activeWallet, onClose, onSchedule, themeColor }: { activ
 
         <div className="space-y-4">
           <div>
-            <label className="text-xs text-gray-500 block mb-1">Select Token</label>
-            <div className="flex gap-2">
-              {['SOL', 'ETH', 'MATIC'].map(s => (
+            <label className="text-xs text-gray-400 block mb-1.5 font-bold uppercase tracking-wider">Select Token</label>
+            <div className="grid grid-cols-4 gap-2">
+              {activeWallet.tokens.map(token => (
                 <button 
-                  key={s}
-                  onClick={() => setSymbol(s)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-bold border transition-all ${symbol === s ? 'bg-white/10 border-white/20 text-white' : 'border-transparent text-gray-500 hover:text-white'}`}
-                  style={symbol === s ? { borderColor: themeColor } : {}}
+                  key={token.id}
+                  onClick={() => setSymbol(token.symbol)}
+                  className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all flex flex-col items-center gap-1 bg-white/5 ${symbol === token.symbol ? 'border-transparent text-white' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
+                  style={symbol === token.symbol ? { borderColor: themeColor, backgroundColor: themeColor + '15', color: themeColor } : {}}
                 >
-                  {s}
+                  {token.icon && <img src={token.icon} className="w-5 h-5 rounded-full object-cover shrink-0" />}
+                  <span className="truncate max-w-full text-[10px]">{token.symbol}</span>
                 </button>
               ))}
             </div>
@@ -653,7 +662,7 @@ function ReceiveModal({ activeWallet, onClose, onSchedule, themeColor }: { activ
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-xl font-bold"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-xl font-bold text-white"
               style={{ borderColor: themeColor + '44' }}
             />
           </div>
@@ -664,7 +673,7 @@ function ReceiveModal({ activeWallet, onClose, onSchedule, themeColor }: { activ
               type="number"
               value={delay}
               onChange={(e) => setDelay(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-white"
             />
           </div>
 
@@ -684,8 +693,14 @@ function ReceiveModal({ activeWallet, onClose, onSchedule, themeColor }: { activ
 function SendModal({ activeWallet, onClose, onSend, themeColor }: { activeWallet: Wallet, onClose: () => void, onSend: (amount: number, symbol: string) => void, themeColor: string }) {
   const [amount, setAmount] = useState('10');
   const [symbol, setSymbol] = useState('SOL');
+  const [address, setAddress] = useState('');
+  const [errorMsg, setErrorMsg] = useState('');
 
   const handleSend = () => {
+    if (address.trim().length > 0) {
+      setErrorMsg("crypto currency sending is currently not available in bosnia");
+      return;
+    }
     onSend(parseFloat(amount) || 0, symbol);
     onClose();
   };
@@ -709,31 +724,62 @@ function SendModal({ activeWallet, onClose, onSend, themeColor }: { activeWallet
 
         <div className="space-y-4">
           <div>
-            <label className="text-xs text-gray-500 block mb-1">Select Token</label>
-            <div className="flex gap-2">
-              {['SOL', 'ETH', 'MATIC'].map(s => (
+            <label className="text-xs text-gray-400 block mb-1.5 font-bold uppercase tracking-wider">Select Token</label>
+            <div className="grid grid-cols-4 gap-2">
+              {activeWallet.tokens.map(token => (
                 <button 
-                  key={s}
-                  onClick={() => setSymbol(s)}
-                  className={`flex-1 py-2 rounded-xl text-sm font-bold border transition-all ${symbol === s ? 'bg-white/10 border-white/20 text-white' : 'border-transparent text-gray-500 hover:text-white'}`}
-                  style={symbol === s ? { borderColor: themeColor } : {}}
+                  key={token.id}
+                  onClick={() => setSymbol(token.symbol)}
+                  className={`py-2 px-1 rounded-xl text-xs font-bold border transition-all flex flex-col items-center gap-1 bg-white/5 ${symbol === token.symbol ? 'border-transparent text-white' : 'border-transparent text-gray-500 hover:text-gray-300'}`}
+                  style={symbol === token.symbol ? { borderColor: themeColor, backgroundColor: themeColor + '15', color: themeColor } : {}}
                 >
-                  {s}
+                  {token.icon && <img src={token.icon} className="w-5 h-5 rounded-full object-cover shrink-0" />}
+                  <span className="truncate max-w-full text-[10px]">{token.symbol}</span>
                 </button>
               ))}
             </div>
           </div>
 
           <div>
-            <label className="text-xs text-gray-500 block mb-1">Amount to Send</label>
+            <label className="text-xs text-gray-500 block mb-1 font-semibold">Recipient Address</label>
+            <input 
+              type="text"
+              placeholder="Enter crypto address..."
+              value={address}
+              onChange={(e) => {
+                setAddress(e.target.value);
+                if (errorMsg) setErrorMsg('');
+              }}
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 text-sm text-white transition-colors"
+              style={{ borderColor: themeColor + '44' }}
+            />
+          </div>
+
+          <div>
+            <label className="text-xs text-gray-500 block mb-1 font-semibold">Amount to Send</label>
             <input 
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-xl font-bold"
+              className="w-full bg-black/40 border border-white/10 rounded-xl px-4 py-3 focus:outline-none focus:border-purple-500 transition-colors text-xl font-bold text-white"
               style={{ borderColor: themeColor + '44' }}
             />
           </div>
+
+          {errorMsg && (
+            <motion.div 
+              initial={{ scale: 0.95, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="p-4 bg-red-500/10 border border-red-500/30 text-red-400 rounded-2xl flex gap-2 items-start"
+            >
+              <div className="bg-red-500/20 text-red-400 p-1 rounded-full mt-0.5 shrink-0">
+                <X size={12} />
+              </div>
+              <div className="text-xs leading-normal font-medium whitespace-pre-line">
+                {errorMsg}
+              </div>
+            </motion.div>
+          )}
 
           <button 
             onClick={handleSend}
@@ -961,21 +1007,35 @@ function AdminPanel({
                   </div>
                   <div className="grid grid-cols-3 gap-2">
                     <div>
-                      <label className="text-[10px] text-gray-500 block mb-1">Amount</label>
-                      <input 
-                        type="number"
-                        value={t.amount}
-                        onChange={(e) => updateToken(t.id, { amount: parseFloat(e.target.value) || 0 })}
-                        className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1 text-xs focus:outline-none"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-[10px] text-gray-500 block mb-1">Value ($)</label>
+                      <label className="text-[10px] text-gray-400 font-bold block mb-1">Value (USD Only) ($)</label>
                       <input 
                         type="number"
                         value={t.value}
-                        onChange={(e) => updateToken(t.id, { value: parseFloat(e.target.value) || 0 })}
-                        className="w-full bg-black/40 border border-white/10 rounded-lg px-2 py-1 text-xs focus:outline-none"
+                        onChange={(e) => {
+                          const val = parseFloat(e.target.value) || 0;
+                          const coinPrices: Record<string, number> = {
+                            SOL: 150,
+                            ETH: 3000,
+                            MATIC: 0.50,
+                            BTC: 65000,
+                            LTC: 80,
+                            XRP: 0.50,
+                            DOGE: 0.15,
+                          };
+                          const price = coinPrices[t.symbol.toUpperCase()] || 1.0;
+                          const amt = Number((val / price).toFixed(6));
+                          updateToken(t.id, { value: val, amount: amt });
+                        }}
+                        className="w-full bg-black/40 border border-green-500/30 rounded-lg px-2 py-1 text-xs focus:outline-none text-green-400 font-bold"
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[10px] text-gray-500 block mb-1">Calculated Amount</label>
+                      <input 
+                        type="text"
+                        value={t.amount}
+                        disabled
+                        className="w-full bg-black/20 border border-white/5 rounded-lg px-2 py-1 text-xs text-gray-500 cursor-not-allowed font-medium"
                       />
                     </div>
                     <div>
